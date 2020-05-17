@@ -123,11 +123,10 @@ Particles::e_var Particles::energy(){
 
     E.ep=0;
     for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (i != j) {
-                Particles::min_var min_distance = min_r(r[i],r[j]);
-                E.ep += 4*e*(pow((s/min_distance.x_min),12)-pow((s/min_distance.x_min),6));
-            }
+        for (int j = i+1; j < n; j++) {
+            Particles::min_var min_distance = min_r(r[i],r[j]);
+            E.ep += 4*e*(pow((s/min_distance.x_min),12)-pow((s/min_distance.x_min),6));
+
         }
     }
 
