@@ -10,8 +10,17 @@ int Particles::create_particles(){
     for(int i=0; i<(int)k; i++){
         for(int j=0; j<(int)k; j++){
             std::vector<double> rr;
-            rr.push_back((0.5+i)*l/k+0.25*(rand() % 10000001 / 10000000.0)*l/k);
-            rr.push_back((0.5+j)*l/k+0.25*(rand() % 10000001 / 10000000.0)*l/k);
+//            if (i%2==0) {
+//                rr.push_back((0.5 + i) * lx / k);
+//            }
+//            else rr.push_back((i) * lx / k);
+//            rr.push_back(pow(3,0.5)/2*(0.5+j)*lx/k);
+//            r.push_back(rr);
+            if (i%2==0) {
+                rr.push_back((0.5 + i) * lx / k);
+            }
+            else rr.push_back((i) * lx / k);
+            rr.push_back(pow(3,0.5)/2*(0.5+j)*lx/k);
             r.push_back(rr);
             if (r.size()==n) break;
         }
@@ -21,8 +30,8 @@ int Particles::create_particles(){
     std::vector<double> v_sum(2, 0);
     for(int i=0; i<n; i++){
         std::vector<double> vv;
-        vv.push_back(((rand() % 20000000-9999999) / 10000000.0)*l/16);
-        vv.push_back(((rand() % 20000000-9999999) / 10000000.0)*l/16);
+        vv.push_back(vmax*(2*(rand() % 2-1)));
+        vv.push_back(vmax*(2*(rand() % 2-1)));
         v.push_back(vv);
         v_sum[0] += v[i][0];
         v_sum[1] += v[i][1];
@@ -60,14 +69,26 @@ std::vector<std::vector<double>> Particles::count_acc(std::vector<std::vector<do
 
 Particles::min_var Particles::min_r(std::vector<double> p1, std::vector<double> p2){
     Particles::min_var min_distance;
-    min_distance.x_min = pow(l,2)*10;
+//    min_distance.x_min = pow(lx,2)*10;
+//    for (int i = -1; i < 2; i++) {
+//        for (int j = -1; j < 2; j++) {
+//            double distance = pow(p2[0]+i*lx-p1[0],2)+pow(p2[1]+j*lx-p1[1],2);
+//            if (distance < min_distance.x_min){
+//                min_distance.x_min = distance;
+//                min_distance.x = p2[0]+i*lx;
+//                min_distance.y = p2[1]+j*lx;
+//            }
+//        }
+//    }
+//    min_distance.x_min = pow(min_distance.x_min,0.5);
+    min_distance.x_min = pow(lx,2)*10;
     for (int i = -1; i < 2; i++) {
         for (int j = -1; j < 2; j++) {
-            double distance = pow(p2[0]+i*l-p1[0],2)+pow(p2[1]+j*l-p1[1],2);
+            double distance = pow(p2[0]+i*lx-p1[0],2)+pow(p2[1]+j*lx-p1[1],2);
             if (distance < min_distance.x_min){
                 min_distance.x_min = distance;
-                min_distance.x = p2[0]+i*l;
-                min_distance.y = p2[1]+j*l;
+                min_distance.x = p2[0]+i*lx;
+                min_distance.y = p2[1]+j*lx;
             }
         }
     }
@@ -133,7 +154,7 @@ Particles::e_var Particles::energy(){
 
 int Particles::moving(){
     auto start = std::chrono::system_clock::now();
-    for (int iter = 0; iter < 500; iter++) {
+    for (int iter = 0; iter < 5; iter++) {
         tscale.push_back(iter);
         std::vector<std::vector<double>> r_d;
         std::vector<std::vector<double>> v_d;
@@ -145,11 +166,11 @@ int Particles::moving(){
             rr.push_back(r[i][1]+v[i][1]*dt+a[i][1]*pow(dt,2)/2);
             r_d.push_back(rr);
 
-            if (r_d[i][0] > l or r_d[i][0] < 0){
-                r_d[i][0] -= l*(int)(r_d[i][0]/l);
+            if (r_d[i][0] > lx or r_d[i][0] < 0){
+                r_d[i][0] -= lx*int(r_d[i][0]/lx);
             }
-            if (r_d[i][1] > l or r_d[i][1] < 0){
-                r_d[i][1] -= l*(int)(r_d[i][1]/l);
+            if (r_d[i][1] > ly or r_d[i][1] < 0){
+                r_d[i][1] -= ly*int(r_d[i][1]/ly);
             }
         }
 
@@ -166,6 +187,8 @@ int Particles::moving(){
         Particles::e_var Energy = energy();
         std::cout << "Total energy is: " << Energy.ef << std::endl;
         std::cout << "Magnit energy is: " << Energy.em << std::endl;
+        std::cout << "Pot energy is: " << Energy.ep << std::endl;
+        std::cout << "kin energy is: " << Energy.ek << std::endl;
         std::cout << std::endl;
         ekscale.push_back(Energy.ek);
         epscale.push_back(Energy.ep);

@@ -50,11 +50,28 @@ public:
     int change_spins(std::vector<std::vector<double>> r);
 
 private:
-    int n = 25;
-    double e = 0.03;
-    double dt = 0.01;
-    int s = 80;
-    int l = 250;
+//    M=80002 #число итераций
+//    m=20000 #через сколько итераций вывод
+//    mcr=50 #через сколько итераций учёт температуры и расчёт корреляций
+//    N=16 # число частиц
+//    Lx=4.5 #размер области
+//    Ly=np.sqrt(3)*Lx/2
+//    dt=0.01 #шаг по времени
+//            E=0.05 #эпсилон
+//            J0=0.2
+//    rc=2
+//    s=1 #сигма
+//            T=0.01
+//    v=0.01 #макс скорость
+//    DT=1600 #время измерения корреляций
+//            t2=0 #t0 для автокорр. ф-ции скорости
+    int n = 16;
+    double e = 0.05;
+    double dt = 0.001;
+    double s = 1;
+    double lx = 4.5;
+    double ly = pow(3,0.5)/2 * lx;
+    double vmax=0.01;
     std::vector<int> tscale;
     std::vector<double> ekscale;
     std::vector<double> epscale;
@@ -65,10 +82,10 @@ private:
 
     //components of spin
 
-    double h = 0.1;
-    double spin_l = 2.0;
-    double rc = (double)l/4;
-    double j_0 = 50;
+    double h = 1;
+    double spin_l =1;
+    double rc = 1;
+    double j_0 = 0.0;
     std::vector<std::vector<double>> spins;
 
 };
